@@ -2,10 +2,13 @@ package com.jalbers.nsunstest;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,31 +19,40 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.concurrent.CountDownLatch;
 
 import static android.R.attr.animation;
+import static android.R.attr.keepScreenOn;
 
 public class MainActivity extends AppCompatActivity {
 
 
     int selectedLift = 1;
     int workoutState;
+    int roundingState;
     boolean fiveThreeOne = true;
     boolean secondLift = false;
     boolean offDay = false;
+    boolean setMax = false;
+    static boolean catherineMartin = true;
 
 
 
@@ -58,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     EditText benchEditText;
     EditText deadliftEditText;
     EditText overheadpressEditText;
+    TextView squatTextView;
+    TextView benchTextView;
+    TextView deadliftTextView;
+    TextView overheadpressTextView;
 
     TextView secondLiftTextView;
     TextView fiveThreeOneTextView;
@@ -106,17 +122,31 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         workoutState = intent.getIntExtra("workoutState", -1);
 
-        DecimalFormat format = new DecimalFormat();
-        format.setDecimalSeparatorAlwaysShown(false);
-
         squatEditText.setOnKeyListener(onKeyListener);
         benchEditText.setOnKeyListener(onKeyListener);
         deadliftEditText.setOnKeyListener(onKeyListener);
         overheadpressEditText.setOnKeyListener(onKeyListener);
 
+        ///// GETTING SAVED SHARED PREFERENCES FOR THE FOUR BIG EDIT TEXTS ///////////////////////////////////////////////
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
+        int count = sharedPref.getInt("Count", 0);
+        float[] savedWeight = new float[4];
+
+        for (int i = 0; i < count; i++) {
+
+            savedWeight[i] = sharedPref.getFloat("savedWeight_" + i, -1);
+        }
+
+        squatEditText.setText(String.valueOf(savedWeight[0]));
+        benchEditText.setText(String.valueOf(savedWeight[1]));
+        deadliftEditText.setText(String.valueOf(savedWeight[2]));
+        overheadpressEditText.setText(String.valueOf(savedWeight[3]));
+        //////////////////////////////////////////////////////////////////////////////////////////////
+
 
         activeLift(selectedLift);
         setFiveThreeOneText();
+        horizontalScrollView.smoothScrollTo(horizontalScrollView.getWidth()/2, 0);
 
         ///// SETS THE "CENTER SNAPPING" MOTION OF THE TOP HORIZONTAL SCROLL ///////////////
         horizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -138,6 +168,54 @@ public class MainActivity extends AppCompatActivity {
 
                             horizontalScrollView.scrollBy((viewLeft + viewWidth /2 ) - center, 0);
                             selectedLift = i;
+
+                            if (i == 1) {
+                                //SQUAT
+                                squatEditText.setTextColor(Color.WHITE);
+                                squatTextView.setTextColor(Color.WHITE);
+
+                                benchEditText.setTextColor(Color.BLACK);
+                                benchTextView.setTextColor(Color.BLACK);
+                                deadliftEditText.setTextColor(Color.BLACK);
+                                deadliftTextView.setTextColor(Color.BLACK);
+                                overheadpressEditText.setTextColor(Color.BLACK);
+                                overheadpressTextView.setTextColor(Color.BLACK);
+
+                            } else if (i == 2) {
+                                //BENCH
+                                benchEditText.setTextColor(Color.WHITE);
+                                benchTextView.setTextColor(Color.WHITE);
+
+                                squatEditText.setTextColor(Color.BLACK);
+                                squatTextView.setTextColor(Color.BLACK);
+                                deadliftEditText.setTextColor(Color.BLACK);
+                                deadliftTextView.setTextColor(Color.BLACK);
+                                overheadpressEditText.setTextColor(Color.BLACK);
+                                overheadpressTextView.setTextColor(Color.BLACK);
+                            } else if (i == 3) {
+                                //DEADLIFT
+                                deadliftEditText.setTextColor(Color.WHITE);
+                                deadliftTextView.setTextColor(Color.WHITE);
+
+                                benchEditText.setTextColor(Color.BLACK);
+                                benchTextView.setTextColor(Color.BLACK);
+                                squatEditText.setTextColor(Color.BLACK);
+                                squatTextView.setTextColor(Color.BLACK);
+                                overheadpressEditText.setTextColor(Color.BLACK);
+                                overheadpressTextView.setTextColor(Color.BLACK);
+                            }else if (i == 4) {
+                                //OHP
+                                overheadpressEditText.setTextColor(Color.WHITE);
+                                overheadpressTextView.setTextColor(Color.WHITE);
+
+                                benchEditText.setTextColor(Color.BLACK);
+                                benchTextView.setTextColor(Color.BLACK);
+                                deadliftEditText.setTextColor(Color.BLACK);
+                                deadliftTextView.setTextColor(Color.BLACK);
+                                squatEditText.setTextColor(Color.BLACK);
+                                squatTextView.setTextColor(Color.BLACK);
+                            }
+
                             activeLift(selectedLift);
                             if (fiveThreeOne) setFiveThreeOneText();
                             if (secondLift) setSecondLiftText();
@@ -151,17 +229,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });////////////////////////////////////////////////////////////////////////////////////
 
+        horizontalScrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                horizontalScrollView.smoothScrollTo(200,0); //// NEED TO SET EXACT WIDTH TO MID SQUAT LAYOUT POINT
+                horizontalScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
     }
 
     ////// SETTING NUMBERS FOR ACTUAL WORKOUT ///////////////////////
 
-    public double round5(double n) {
+    public String round5(double n) {
 
-        double temp = n%5;
-        if (temp<2.5)
-            return n-temp;
-        else
-            return n+5-temp;
+        DecimalFormat format = new DecimalFormat("0.#");
+
+        if (catherineMartin) {
+
+            double temp = n % 5;
+
+            if (temp < 2.5)
+                return format.format(n - temp);
+            else
+                return format.format(n + 5 - temp);
+        } else {
+
+            double temp2 = n % 2.5;
+
+            if (temp2 < 1.25)
+                return String.valueOf(n - temp2);
+            else
+                return String.valueOf(n + 2.5 - temp2);
+        }
+
     }
 
 
@@ -207,15 +311,15 @@ public class MainActivity extends AppCompatActivity {
             //SQUAT
             weight = Double.parseDouble(squatEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .75) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .85) + " x 3");
-            set3NumTextView.setText((int) round5(weight * .95) + " x 1+");
-            set4NumTextView.setText((int) round5(weight * .90) + " x 3");
-            set5NumTextView.setText((int) round5(weight * .85) + " x 3");
-            set6NumTextView.setText((int) round5(weight * .80) + " x 3");
-            set7NumTextView.setText((int) round5(weight * .75) + " x 5");
-            set8NumTextView.setText((int) round5(weight * .70) + " x 5");
-            set9NumTextView.setText((int) round5(weight * .65) + " x 5+");
+            set1NumTextView.setText(round5(weight * .75) + " x 5");
+            set2NumTextView.setText(round5(weight * .85) + " x 3");
+            set3NumTextView.setText(round5(weight * .95) + " x 1+");
+            set4NumTextView.setText(round5(weight * .90) + " x 3");
+            set5NumTextView.setText(round5(weight * .85) + " x 3");
+            set6NumTextView.setText(round5(weight * .80) + " x 3");
+            set7NumTextView.setText(round5(weight * .75) + " x 5");
+            set8NumTextView.setText(round5(weight * .70) + " x 5");
+            set9NumTextView.setText(round5(weight * .65) + " x 5+");
 
             set1TextView.setText("Set 1 - 75%");
             set2TextView.setText("Set 2 - 85%");
@@ -231,15 +335,15 @@ public class MainActivity extends AppCompatActivity {
             //BENCH
             weight = Double.parseDouble(benchEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .75) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .85) + " x 3");
-            set3NumTextView.setText((int) round5(weight * .95) + " x 1+");
-            set4NumTextView.setText((int) round5(weight * .90) + " x 3");
-            set5NumTextView.setText((int) round5(weight * .85) + " x 5");
-            set6NumTextView.setText((int) round5(weight * .80) + " x 3");
-            set7NumTextView.setText((int) round5(weight * .75) + " x 5");
-            set8NumTextView.setText((int) round5(weight * .70) + " x 3");
-            set9NumTextView.setText((int) round5(weight * .65) + " x 5+");
+            set1NumTextView.setText(round5(weight * .75) + " x 5");
+            set2NumTextView.setText(round5(weight * .85) + " x 3");
+            set3NumTextView.setText(round5(weight * .95) + " x 1+");
+            set4NumTextView.setText(round5(weight * .90) + " x 3");
+            set5NumTextView.setText(round5(weight * .85) + " x 5");
+            set6NumTextView.setText(round5(weight * .80) + " x 3");
+            set7NumTextView.setText(round5(weight * .75) + " x 5");
+            set8NumTextView.setText(round5(weight * .70) + " x 3");
+            set9NumTextView.setText(round5(weight * .65) + " x 5+");
 
             set1TextView.setText("Set 1 - 75%");
             set2TextView.setText("Set 2 - 85%");
@@ -255,15 +359,15 @@ public class MainActivity extends AppCompatActivity {
             //DEAD LIFT
             weight = Double.parseDouble(deadliftEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .75) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .85) + " x 3");
-            set3NumTextView.setText((int) round5(weight * .95) + " x 1+");
-            set4NumTextView.setText((int) round5(weight * .90) + " x 3");
-            set5NumTextView.setText((int) round5(weight * .85) + " x 3");
-            set6NumTextView.setText((int) round5(weight * .80) + " x 3");
-            set7NumTextView.setText((int) round5(weight * .75) + " x 3");
-            set8NumTextView.setText((int) round5(weight * .70) + " x 3");
-            set9NumTextView.setText((int) round5(weight * .65) + " x 3+");
+            set1NumTextView.setText(round5(weight * .75) + " x 5");
+            set2NumTextView.setText(round5(weight * .85) + " x 3");
+            set3NumTextView.setText(round5(weight * .95) + " x 1+");
+            set4NumTextView.setText(round5(weight * .90) + " x 3");
+            set5NumTextView.setText(round5(weight * .85) + " x 3");
+            set6NumTextView.setText(round5(weight * .80) + " x 3");
+            set7NumTextView.setText(round5(weight * .75) + " x 3");
+            set8NumTextView.setText(round5(weight * .70) + " x 3");
+            set9NumTextView.setText(round5(weight * .65) + " x 3+");
 
             set1TextView.setText("Set 1 - 75%");
             set2TextView.setText("Set 2 - 85%");
@@ -279,15 +383,15 @@ public class MainActivity extends AppCompatActivity {
             //OHP
             weight = Double.parseDouble(overheadpressEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .75) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .85) + " x 3");
-            set3NumTextView.setText((int) round5(weight * .95) + " x 1+");
-            set4NumTextView.setText((int) round5(weight * .90) + " x 3");
-            set5NumTextView.setText((int) round5(weight * .85) + " x 3");
-            set6NumTextView.setText((int) round5(weight * .80) + " x 3");
-            set7NumTextView.setText((int) round5(weight * .75) + " x 5");
-            set8NumTextView.setText((int) round5(weight * .70) + " x 5");
-            set9NumTextView.setText((int) round5(weight * .65) + " x 5+");
+            set1NumTextView.setText(round5(weight * .75) + " x 5");
+            set2NumTextView.setText(round5(weight * .85) + " x 3");
+            set3NumTextView.setText(round5(weight * .95) + " x 1+");
+            set4NumTextView.setText(round5(weight * .90) + " x 3");
+            set5NumTextView.setText(round5(weight * .85) + " x 3");
+            set6NumTextView.setText(round5(weight * .80) + " x 3");
+            set7NumTextView.setText(round5(weight * .75) + " x 5");
+            set8NumTextView.setText(round5(weight * .70) + " x 5");
+            set9NumTextView.setText(round5(weight * .65) + " x 5+");
 
             set1TextView.setText("Set 1 - 75%");
             set2TextView.setText("Set 2 - 85%");
@@ -327,14 +431,14 @@ public class MainActivity extends AppCompatActivity {
             //SUMO DL
             weight = Double.parseDouble(deadliftEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .5) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .6) + " x 5");
-            set3NumTextView.setText((int) round5(weight * .7) + " x 3");
-            set4NumTextView.setText((int) round5(weight * .7) + " x 5");
-            set5NumTextView.setText((int) round5(weight * .7) + " x 7");
-            set6NumTextView.setText((int) round5(weight * .7) + " x 4");
-            set7NumTextView.setText((int) round5(weight * .7) + " x 6");
-            set8NumTextView.setText((int) round5(weight * .7) + " x 8");
+            set1NumTextView.setText(round5(weight * .5) + " x 5");
+            set2NumTextView.setText(round5(weight * .6) + " x 5");
+            set3NumTextView.setText(round5(weight * .7) + " x 3");
+            set4NumTextView.setText(round5(weight * .7) + " x 5");
+            set5NumTextView.setText(round5(weight * .7) + " x 7");
+            set6NumTextView.setText(round5(weight * .7) + " x 4");
+            set7NumTextView.setText(round5(weight * .7) + " x 6");
+            set8NumTextView.setText(round5(weight * .7) + " x 8");
 
             set1TextView.setText("Set 1 - 50%");
             set2TextView.setText("Set 2 - 60%");
@@ -349,14 +453,14 @@ public class MainActivity extends AppCompatActivity {
             //CG BENCH
             weight = Double.parseDouble(benchEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .4) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .5) + " x 5");
-            set3NumTextView.setText((int) round5(weight * .6) + " x 3");
-            set4NumTextView.setText((int) round5(weight * .6) + " x 5");
-            set5NumTextView.setText((int) round5(weight * .6) + " x 7");
-            set6NumTextView.setText((int) round5(weight * .6) + " x 4");
-            set7NumTextView.setText((int) round5(weight * .6) + " x 6");
-            set8NumTextView.setText((int) round5(weight * .6) + " x 8");
+            set1NumTextView.setText(round5(weight * .4) + " x 5");
+            set2NumTextView.setText(round5(weight * .5) + " x 5");
+            set3NumTextView.setText(round5(weight * .6) + " x 3");
+            set4NumTextView.setText(round5(weight * .6) + " x 5");
+            set5NumTextView.setText(round5(weight * .6) + " x 7");
+            set6NumTextView.setText(round5(weight * .6) + " x 4");
+            set7NumTextView.setText(round5(weight * .6) + " x 6");
+            set8NumTextView.setText(round5(weight * .6) + " x 8");
 
             set1TextView.setText("Set 1 - 40%");
             set2TextView.setText("Set 2 - 50%");
@@ -371,14 +475,14 @@ public class MainActivity extends AppCompatActivity {
             //FRONT SQUAT
             weight = Double.parseDouble(squatEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .35) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .45) + " x 5");
-            set3NumTextView.setText((int) round5(weight * .55) + " x 3");
-            set4NumTextView.setText((int) round5(weight * .55) + " x 5");
-            set5NumTextView.setText((int) round5(weight * .55) + " x 7");
-            set6NumTextView.setText((int) round5(weight * .55) + " x 4");
-            set7NumTextView.setText((int) round5(weight * .55) + " x 6");
-            set8NumTextView.setText((int) round5(weight * .55) + " x 8");
+            set1NumTextView.setText(round5(weight * .35) + " x 5");
+            set2NumTextView.setText(round5(weight * .45) + " x 5");
+            set3NumTextView.setText(round5(weight * .55) + " x 3");
+            set4NumTextView.setText(round5(weight * .55) + " x 5");
+            set5NumTextView.setText(round5(weight * .55) + " x 7");
+            set6NumTextView.setText(round5(weight * .55) + " x 4");
+            set7NumTextView.setText(round5(weight * .55) + " x 6");
+            set8NumTextView.setText(round5(weight * .55) + " x 8");
 
             set1TextView.setText("Set 1 - 35%");
             set2TextView.setText("Set 2 - 45%");
@@ -393,14 +497,14 @@ public class MainActivity extends AppCompatActivity {
             //INCLINE BENCH
             weight = Double.parseDouble(benchEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .4) + " x 5");
-            set2NumTextView.setText((int) round5(weight * .5) + " x 5");
-            set3NumTextView.setText((int) round5(weight * .6) + " x 3");
-            set4NumTextView.setText((int) round5(weight * .6) + " x 5");
-            set5NumTextView.setText((int) round5(weight * .6) + " x 7");
-            set6NumTextView.setText((int) round5(weight * .6) + " x 4");
-            set7NumTextView.setText((int) round5(weight * .6) + " x 6");
-            set8NumTextView.setText((int) round5(weight * .6) + " x 8");
+            set1NumTextView.setText(round5(weight * .4) + " x 5");
+            set2NumTextView.setText(round5(weight * .5) + " x 5");
+            set3NumTextView.setText(round5(weight * .6) + " x 3");
+            set4NumTextView.setText(round5(weight * .6) + " x 5");
+            set5NumTextView.setText(round5(weight * .6) + " x 7");
+            set6NumTextView.setText(round5(weight * .6) + " x 4");
+            set7NumTextView.setText(round5(weight * .6) + " x 6");
+            set8NumTextView.setText(round5(weight * .6) + " x 8");
 
             set1TextView.setText("Set 1 - 40%");
             set2TextView.setText("Set 2 - 50%");
@@ -439,15 +543,15 @@ public class MainActivity extends AppCompatActivity {
             //SQUAT
             weight = Double.parseDouble(squatEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set2NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set3NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set4NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set5NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set6NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set7NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set8NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set9NumTextView.setText((int) round5(weight * .725) + " x 3+");
+            set1NumTextView.setText(round5(weight * .725) + " x 3");
+            set2NumTextView.setText(round5(weight * .725) + " x 3");
+            set3NumTextView.setText(round5(weight * .725) + " x 3");
+            set4NumTextView.setText(round5(weight * .725) + " x 3");
+            set5NumTextView.setText(round5(weight * .725) + " x 3");
+            set6NumTextView.setText(round5(weight * .725) + " x 3");
+            set7NumTextView.setText(round5(weight * .725) + " x 3");
+            set8NumTextView.setText(round5(weight * .725) + " x 3");
+            set9NumTextView.setText(round5(weight * .725) + " x 3+");
 
             set1TextView.setText("Set 1 - 72.5%");
             set2TextView.setText("Set 2 - 72.5%");
@@ -463,15 +567,15 @@ public class MainActivity extends AppCompatActivity {
             //BENCH
             weight = Double.parseDouble(benchEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .65) + " x 8");
-            set2NumTextView.setText((int) round5(weight * .75) + " x 6");
-            set3NumTextView.setText((int) round5(weight * .85) + " x 4");
-            set4NumTextView.setText((int) round5(weight * .85) + " x 4");
-            set5NumTextView.setText((int) round5(weight * .85) + " x 4");
-            set6NumTextView.setText((int) round5(weight * .80) + " x 5");
-            set7NumTextView.setText((int) round5(weight * .75) + " x 6");
-            set8NumTextView.setText((int) round5(weight * .70) + " x 7");
-            set9NumTextView.setText((int) round5(weight * .65) + " x 8+");
+            set1NumTextView.setText(round5(weight * .65) + " x 8");
+            set2NumTextView.setText(round5(weight * .75) + " x 6");
+            set3NumTextView.setText(round5(weight * .85) + " x 4");
+            set4NumTextView.setText(round5(weight * .85) + " x 4");
+            set5NumTextView.setText(round5(weight * .85) + " x 4");
+            set6NumTextView.setText(round5(weight * .80) + " x 5");
+            set7NumTextView.setText(round5(weight * .75) + " x 6");
+            set8NumTextView.setText(round5(weight * .70) + " x 7");
+            set9NumTextView.setText(round5(weight * .65) + " x 8+");
 
             set1TextView.setText("Set 1 - 65%");
             set2TextView.setText("Set 2 - 75%");
@@ -487,15 +591,15 @@ public class MainActivity extends AppCompatActivity {
             //DEAD LIFT
             weight = Double.parseDouble(deadliftEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set2NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set3NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set4NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set5NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set6NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set7NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set8NumTextView.setText((int) round5(weight * .725) + " x 3");
-            set9NumTextView.setText((int) round5(weight * .725) + " x 3+");
+            set1NumTextView.setText(round5(weight * .725) + " x 3");
+            set2NumTextView.setText(round5(weight * .725) + " x 3");
+            set3NumTextView.setText(round5(weight * .725) + " x 3");
+            set4NumTextView.setText(round5(weight * .725) + " x 3");
+            set5NumTextView.setText(round5(weight * .725) + " x 3");
+            set6NumTextView.setText(round5(weight * .725) + " x 3");
+            set7NumTextView.setText(round5(weight * .725) + " x 3");
+            set8NumTextView.setText(round5(weight * .725) + " x 3");
+            set9NumTextView.setText(round5(weight * .725) + " x 3+");
 
             set1TextView.setText("Set 1 - 72.5%");
             set2TextView.setText("Set 2 - 72.5%");
@@ -511,15 +615,15 @@ public class MainActivity extends AppCompatActivity {
             //OHP
             weight = Double.parseDouble(overheadpressEditText.getText().toString());
 
-            set1NumTextView.setText((int) round5(weight * .65) + " x 8");
-            set2NumTextView.setText((int) round5(weight * .75) + " x 6");
-            set3NumTextView.setText((int) round5(weight * .85) + " x 4");
-            set4NumTextView.setText((int) round5(weight * .85) + " x 4");
-            set5NumTextView.setText((int) round5(weight * .85) + " x 4");
-            set6NumTextView.setText((int) round5(weight * .80) + " x 5");
-            set7NumTextView.setText((int) round5(weight * .75) + " x 6");
-            set8NumTextView.setText((int) round5(weight * .70) + " x 7");
-            set9NumTextView.setText((int) round5(weight * .65) + " x 8+");
+            set1NumTextView.setText(round5(weight * .65) + " x 8");
+            set2NumTextView.setText(round5(weight * .75) + " x 6");
+            set3NumTextView.setText(round5(weight * .85) + " x 4");
+            set4NumTextView.setText(round5(weight * .85) + " x 4");
+            set5NumTextView.setText(round5(weight * .85) + " x 4");
+            set6NumTextView.setText(round5(weight * .80) + " x 5");
+            set7NumTextView.setText(round5(weight * .75) + " x 6");
+            set8NumTextView.setText(round5(weight * .70) + " x 7");
+            set9NumTextView.setText(round5(weight * .65) + " x 8+");
 
             set1TextView.setText("Set 1 - 65%");
             set2TextView.setText("Set 2 - 75%");
@@ -544,6 +648,11 @@ public class MainActivity extends AppCompatActivity {
             if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER)) {
                 // Perform action on key press
 
+                float[] savedWeights = {Float.parseFloat(squatEditText.getText().toString()), Float.parseFloat(benchEditText.getText().toString()),
+                        Float.parseFloat(deadliftEditText.getText().toString()), Float.parseFloat(overheadpressEditText.getText().toString())};
+
+                saveWeight(savedWeights);
+
                 try {
                     if (fiveThreeOne) {
                         setFiveThreeOneText();
@@ -562,11 +671,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+
             return false;
         }
     }; ////////////////////////////////////////////////////////////////////////////////////
-
-
 
 
 
@@ -581,8 +689,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void toSettings (View view) {
 
-        //Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-        //startActivity(intent);
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        startActivity(intent);
     }
 
     ////// MAX BUTTON CODE ///////////////////////////////////
@@ -593,7 +701,15 @@ public class MainActivity extends AppCompatActivity {
         final TextView calculatedMaxTextView = (TextView) findViewById(R.id.calculatedMaxTextView);
         final CheckBox trainingMaxCheckBox = (CheckBox) findViewById(R.id.trainingMaxCheckBox);
 
-        maxLayout.animate().translationY(-75)
+        setMax = true;
+        maxLayout.requestFocus();
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        maxTextView.setTextColor(Color.WHITE);
+
+        maxLayout.animate().y((float) (displayMetrics.heightPixels * .05))
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
@@ -609,10 +725,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onAnimationRepeat(Animator animator) {}
                 });
 
-        horizontalScrollView.setAlpha((float) .25);
-        verticalScrollView.setAlpha((float) .25);
-        workoutLinearLayout.setAlpha((float) .25);
-        bottomButtonsLayout.setAlpha((float) .25);
+        dimScreen();
 
         View.OnKeyListener keyListener = new View.OnKeyListener() {
             @Override
@@ -624,10 +737,10 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         double weight = Double.parseDouble(weightEditText.getText().toString());
                         double reps = Double.parseDouble(repsEditText.getText().toString());
-                        double result = round5(weight * reps * (.0333) + weight);
+                        String result = round5(weight * reps * (.0333) + weight);
 
                         if (trainingMaxCheckBox.isChecked()){
-                            result = round5(result *.9);
+                            result = round5((weight * reps * (.0333) + weight)*.9);
                         }
 
                         calculatedMaxTextView.setText(String.valueOf(result));
@@ -639,17 +752,21 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), "Please insert a number", Toast.LENGTH_SHORT).show();
                     }
-
                 }
                 return false;
             }
         };
+
         weightEditText.setOnKeyListener(keyListener);
         repsEditText.setOnKeyListener(keyListener);
     }
-
+    ///////////////////////////// CLOSE "MAX" LAYOUT //////////////////////////////////
     public void closeMax (View view) {
         // THIS IS THE X BUTTON ///
+        setMax = false;
+
+        maxTextView.setTextColor(Color.BLACK);
+
         maxLayout.animate().translationY(1500)
                 .setListener(new Animator.AnimatorListener() {
                                  @Override
@@ -665,11 +782,302 @@ public class MainActivity extends AppCompatActivity {
                                  public void onAnimationRepeat(Animator animator) {}
                 });
 
-        horizontalScrollView.setAlpha((float) 1);
-        verticalScrollView.setAlpha((float) 1);
-        workoutLinearLayout.setAlpha((float) 1);
-        bottomButtonsLayout.setAlpha((float) 1);
+        dimScreen();
+    } ///////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ///////////BRING UP "HOW TO" ////////////////////////////////////
+    public void toHowTo (View view) {
+
+        final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
+        TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
+        howToTextView.setTextColor(Color.WHITE);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        setHowToTextView.animate().y((float) (displayMetrics.heightPixels * .05))
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        setHowToTextView.setVisibility(View.VISIBLE);
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animator) {}
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {}
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {}
+                });
+
+        dimScreen();
     }
+
+    ///////////////////////////// CLOSE "HOW TO" ///////////////////////////////////
+    public void closeHowTo (View view) {
+
+        final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
+        TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
+
+        howToTextView.setTextColor(Color.BLACK);
+
+        setHowToTextView.animate().translationY(1500)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {}
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+
+                       setHowToTextView.setVisibility(View.GONE);
+                    }
+                    @Override
+                    public void onAnimationCancel(Animator animator) {}
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {}
+                });
+
+        dimScreen();
+    } ///////////////////////////////////////////////////////////////////////
+
+
+
+    /////////////////// TO NOTES CODE //////////////////////////////////////////////
+    public void toNotes (View view) {
+
+        final ScrollView notesLayout = (ScrollView) findViewById(R.id.notesLayout);
+        final EditText accessoryNotes = (EditText) findViewById(R.id.accesoryNotes);
+        final TextView notesLiftTextView = (TextView) findViewById(R.id.notesLiftTextView);
+
+        final String[] savedNotes = new String[4];
+
+        /////////////////////////////// GETTING SHARED PREFERENCES FOR THE NOTES //////////////////////
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+
+        if (selectedLift == 1) {
+            //SQUAT
+            notesLiftTextView.setText("Squat notes:");
+            savedNotes[0] = sharedPref.getString("squatNotes", "");
+            accessoryNotes.setText(savedNotes[0]);
+        } else if (selectedLift == 2) {
+            //BENCH
+            notesLiftTextView.setText("Bench Press notes");
+            savedNotes[1] = sharedPref.getString("benchNotes", "");
+            accessoryNotes.setText(savedNotes[1]);
+        } else if (selectedLift == 3) {
+            //DEADLIFT
+            notesLiftTextView.setText("Dead Lift notes");
+            savedNotes [2] = sharedPref.getString("deadliftNotes", "");
+            accessoryNotes.setText(savedNotes[2]);
+        }else if (selectedLift == 4) {
+            //OHP
+            notesLiftTextView.setText("Overhead Press notes");
+            savedNotes[3] = sharedPref.getString("overheadpressNotes", "");
+            accessoryNotes.setText(savedNotes[3]);
+        }
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        notesLayout.animate().y((float) (displayMetrics.heightPixels * .05))
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        notesLayout.setVisibility(View.VISIBLE);
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animator) {}
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {}
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {}
+                });
+
+        dimScreen();
+
+
+
+        accessoryNotes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if (selectedLift == 1) {
+                    //SQUAT
+                    savedNotes[0] = accessoryNotes.getText().toString();
+                    editor.putString("squatNotes", savedNotes[0]);
+                    editor.apply();
+                } else if (selectedLift == 2) {
+                    //BENCH
+                    savedNotes[1] = accessoryNotes.getText().toString();
+                    editor.putString("benchNotes", savedNotes[1]);
+                    editor.apply();
+                } else if (selectedLift == 3) {
+                    //DEADLIFT
+                    savedNotes[2] = accessoryNotes.getText().toString();
+                    editor.putString("deadliftNotes", savedNotes[2]);
+                    editor.apply();
+                }else if (selectedLift == 4) {
+                    //OHP
+                    savedNotes[3] = accessoryNotes.getText().toString();
+                    editor.putString("overheadpressNotes", savedNotes[3]);
+                    editor.apply();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+    }
+
+
+    public void closeNotes (View view) {
+
+        final ScrollView notesLayout = (ScrollView) findViewById(R.id.notesLayout);
+        final EditText accesortyNotes = (EditText) findViewById(R.id.accesoryNotes);
+
+        howToTextView.setTextColor(Color.BLACK);
+
+        notesLayout.animate().translationY(1500)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {}
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+
+                        notesLayout.setVisibility(View.GONE);
+                    }
+                    @Override
+                    public void onAnimationCancel(Animator animator) {}
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {}
+                });
+
+        dimScreen();
+    } ////////////////////////////////////////////////////////////////////////////////
+
+    public void dimScreen() {
+
+        if (horizontalScrollView.ALPHA.get(horizontalScrollView) == 1) {
+
+            horizontalScrollView.setAlpha((float) .25);
+            verticalScrollView.setAlpha((float) .25);
+            workoutLinearLayout.setAlpha((float) .25);
+            bottomButtonsLayout.setAlpha((float) .25);
+
+        } else if (horizontalScrollView.ALPHA.get(horizontalScrollView) == .25) {
+
+            horizontalScrollView.setAlpha((float) 1);
+            verticalScrollView.setAlpha((float) 1);
+            workoutLinearLayout.setAlpha((float) 1);
+            bottomButtonsLayout.setAlpha((float) 1);
+        }
+    }
+
+    public boolean isViewInBounds(View view, int x, int y){
+
+        Rect outRect = new Rect();
+        int[] location = new int[2];
+
+        view.getDrawingRect(outRect);
+        view.getLocationOnScreen(location);
+        outRect.offset(location[0], location[1]);
+        return outRect.contains(x, y);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+        int x = (int) ev.getRawX();
+        int y = (int) ev.getRawY();
+        int[] location = new int[2];
+        Rect viewRect = new Rect();
+
+        if (setMax) {
+
+           maxLayout.getLocationOnScreen(location);
+
+            viewRect.set(maxLayout.getLeft(), location[1] , maxLayout.getRight(), location[1] + maxLayout.getHeight());
+            //maxLayout.getDrawingRect(viewRect);
+            Log.i("height and width", String.valueOf(maxLayout.getHeight()) + "  " + String.valueOf(maxLayout.getWidth()));
+
+            if (ev.getAction() == MotionEvent.ACTION_UP) {
+
+                if (!viewRect.contains(x,y)) {
+                    Log.i("outside touch", "detected");
+                    closeMax(maxLayout);
+                    /*
+                    maxTextView.setTextColor(Color.BLACK);
+
+                    maxLayout.animate().translationY(1500)
+                            .setListener(new Animator.AnimatorListener() {
+                                @Override
+                                public void onAnimationStart(Animator animator) {}
+                                @Override
+                                public void onAnimationEnd(Animator animator) {
+
+                                    maxLayout.setVisibility(View.GONE);
+                                }
+                                @Override
+                                public void onAnimationCancel(Animator animator) {}
+                                @Override
+                                public void onAnimationRepeat(Animator animator) {}
+                            });
+                    dimScreen();
+                    setMax = false;
+                    */
+                    return true;
+
+                } else if (viewRect.contains(x,y)) {
+                    Log.i("inside touch", "detected");
+                    return true;
+                }
+            }
+        }
+
+
+
+
+        return super.dispatchTouchEvent(ev);
+    }
+
+
+    ///////////// PREVENT SCREEN SLEEP CODE //////////////////////////////////////
+/*
+    public void preventScreenSleep(View view) {
+
+        if (SettingsActivity.screenSleepSwitch.isChecked()) {
+
+            mainLayout.setKeepScreenOn(true);
+        } else if (!screenSleepSwitch.isChecked()) {
+
+            mainLayout.setKeepScreenOn(false);
+        }
+    }
+    */
+
+
+
+    public void saveWeight (float[] array) {
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("Count", array.length);
+
+        int count = 0;
+        for (float i : array) {
+            editor.putFloat("savedWeight_" + count++, i);
+        }
+        editor.apply();
+    }
+
+
+
 
 
     ////////////////////////////////////ALL THE UI FINDVIEWBYID STUFF/////////////////////////////////////////////////////
@@ -683,10 +1091,16 @@ public class MainActivity extends AppCompatActivity {
         workoutLinearLayout = (LinearLayout) findViewById(R.id.workoutLinearLayout);
         bottomButtonsLayout = (LinearLayout) findViewById(R.id.bottomButtonsLayout);
 
+        //SettingsActivity.screenSleepSwitch = (Switch) findViewById(R.id.screenSleepSwitch);
+
         squatEditText = (EditText) findViewById(R.id.squatEditText);
         benchEditText = (EditText) findViewById(R.id.benchEditText);
         deadliftEditText = (EditText) findViewById(R.id.deadliftEditText);
         overheadpressEditText = (EditText) findViewById(R.id.overheadpressEditText);
+        squatTextView = (TextView) findViewById(R.id.squatTextView);
+        benchTextView = (TextView) findViewById(R.id.benchTextView);
+        deadliftTextView = (TextView) findViewById(R.id.deadliftTextView);
+        overheadpressTextView = (TextView) findViewById(R.id.overheadpressTextView);
 
         secondLiftTextView = (TextView) findViewById(R.id.secondLiftTextView);
         fiveThreeOneTextView = (TextView) findViewById(R.id.fiveThreeOneTextView);

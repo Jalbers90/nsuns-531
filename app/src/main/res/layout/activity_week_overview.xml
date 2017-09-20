@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weeklyOverviewLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    tools:context="com.jalbers.nsunstest.WeekOverviewActivity">
+
+    <LinearLayout
+        android:id="@+id/daysOfWeekLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <TextView
+            android:id="@+id/sundayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_textview"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="SUN" />
+
+        <TextView
+            android:id="@+id/mondayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_textview"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="MON" />
+
+        <TextView
+            android:id="@+id/tuesdayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_textview"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="TUE" />
+
+        <TextView
+            android:id="@+id/wednesdayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_textview"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="WED" />
+
+        <TextView
+            android:id="@+id/thursdayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_textview"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="THU" />
+
+        <TextView
+            android:id="@+id/fridayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_textview"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="FRI" />
+
+        <TextView
+            android:id="@+id/saturdayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_textview"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="SAT" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/weekCalenderView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/daysOfWeekLinearLayout"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:id="@+id/sunLinearyLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_linearlayout"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <EditText
+                android:id="@+id/sundayText1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:hint="Tier 1 Lift"
+                android:inputType="text|textMultiLine"
+                android:singleLine="false"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/sundayText2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:hint="Tier 2 Lift"
+                android:inputType="text|textMultiLine"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/sundayText3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:gravity="top|left"
+                android:hint="Insert personal assistance work and notes in this row. \n\nSuggested assistance work is listed."
+                android:inputType="textMultiLine"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/monLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_linearlayout"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <EditText
+                android:id="@+id/mondayText1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="text|textMultiLine"
+                android:text="Bench"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/mondayText2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="OHP"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/mondayText3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Chest, Arms, Back"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tueLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_linearlayout"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <EditText
+                android:id="@+id/tuesdayText1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Squat"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/tuesdayText2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Sumo DL"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/tuesdayText3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Legs, Abs"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/wedLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_linearlayout"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <EditText
+                android:id="@+id/wedText1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="OHP"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/wedText2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="text|textMultiLine"
+                android:text="Incline Bench"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/wedText3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Shoulders, Chest"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/thuLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_linearlayout"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <EditText
+                android:id="@+id/thursText1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Deadlift"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/thursText2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Front Squat"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/thursText3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Back, Abs"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/friLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_linearlayout"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <EditText
+                android:id="@+id/friText1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Bench"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/friText2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="C.G. Bench"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/friText3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Arms, other"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/satLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/customborder_linearlayout"
+            android:orientation="vertical"
+            android:paddingTop="5dp">
+
+            <EditText
+                android:id="@+id/satText1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Rest"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/satText2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:text="Rest"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/satText3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:ems="10"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

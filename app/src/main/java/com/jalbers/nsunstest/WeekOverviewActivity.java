@@ -68,7 +68,6 @@ public class WeekOverviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         counter = intent.getIntExtra("workoutState", -1);
-        Log.i("counter equals", String.valueOf(counter));
 
         if (counter == 4) {
             fourDaySetup();
@@ -77,11 +76,6 @@ public class WeekOverviewActivity extends AppCompatActivity {
         } else if (counter == 6) {
             sixDaySetup();
         }
-
-
-
-
-
 
     }
 
