@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -30,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,12 +49,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     int selectedLift = 1;
+    int a = 1, b = 0;
     int workoutState;
     int roundingState;
     boolean fiveThreeOne = true;
     boolean secondLift = false;
     boolean offDay = false;
     boolean setMax = false;
+    boolean setNotes = false;
+    boolean setHowTo = false;
+    boolean setSpinner = false;
     static boolean catherineMartin = true;
 
 
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     ScrollView verticalScrollView;
     LinearLayout workoutLinearLayout;
     LinearLayout bottomButtonsLayout;
+    ScrollView notesLayout;
 
     EditText squatEditText;
     EditText benchEditText;
@@ -75,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     TextView deadliftTextView;
     TextView overheadpressTextView;
 
-    TextView secondLiftTextView;
+    CustomSpinner secondLiftSpinner;
     TextView fiveThreeOneTextView;
     TextView offDayTextView;
 
@@ -119,13 +127,19 @@ public class MainActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         uiRefSetup();
 
-        Intent intent = getIntent();
-        workoutState = intent.getIntExtra("workoutState", -1);
+        //Intent intent = getIntent();
+        //workoutState = intent.getIntExtra("workoutState", -1);
 
         squatEditText.setOnKeyListener(onKeyListener);
         benchEditText.setOnKeyListener(onKeyListener);
         deadliftEditText.setOnKeyListener(onKeyListener);
         overheadpressEditText.setOnKeyListener(onKeyListener);
+
+        String[] spinnerItems = new String[] {"C.G. Bench", "Front Squats", "Incline Bench", "OHP", "Sumo DL"};
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnerItems);
+        secondLiftSpinner.setAdapter(spinnerAdapter);
+        secondLiftSpinner.setOnItemSelectedEvenIfUnchangedListener(itemSelectedListener);
+
 
         ///// GETTING SAVED SHARED PREFERENCES FOR THE FOUR BIG EDIT TEXTS ///////////////////////////////////////////////
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
@@ -142,11 +156,6 @@ public class MainActivity extends AppCompatActivity {
         deadliftEditText.setText(String.valueOf(savedWeight[2]));
         overheadpressEditText.setText(String.valueOf(savedWeight[3]));
         //////////////////////////////////////////////////////////////////////////////////////////////
-
-
-        activeLift(selectedLift);
-        setFiveThreeOneText();
-        horizontalScrollView.smoothScrollTo(horizontalScrollView.getWidth()/2, 0);
 
         ///// SETS THE "CENTER SNAPPING" MOTION OF THE TOP HORIZONTAL SCROLL ///////////////
         horizontalScrollView.setOnTouchListener(new View.OnTouchListener() {
@@ -216,9 +225,8 @@ public class MainActivity extends AppCompatActivity {
                                 squatTextView.setTextColor(Color.BLACK);
                             }
 
-                            activeLift(selectedLift);
+                            //activeLift(selectedLift);
                             if (fiveThreeOne) setFiveThreeOneText();
-                            if (secondLift) setSecondLiftText();
                             if (offDay) setOffDayText();
 
                             break;
@@ -229,18 +237,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });////////////////////////////////////////////////////////////////////////////////////
 
+        /////////////// SET HORIZONTAL SCROLL INITIAL POSITION ////////////////////////////////////////////////
         horizontalScrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 horizontalScrollView.smoothScrollTo(200,0); //// NEED TO SET EXACT WIDTH TO MID SQUAT LAYOUT POINT
                 horizontalScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
-        });
+        });/////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+        // INTITIAL SET UP //////////////////////////////////////////////////////////////////////
+        setFiveThreeOneText();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
     }
+
+    ////////////// SET SECOND LIFT SPINNER LISTENER //////////////////////////////////////////////
+        AdapterView.OnItemSelectedListener itemSelectedListener = (new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            if ( b < a){
+                b++;
+            } else {
+                setSecondLift(view);
+                ((TextView) view).setTextColor(Color.WHITE);
+            }
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {}
+    }); ////////////////////////////////////////////////////////////////////////////////////////
 
     ////// SETTING NUMBERS FOR ACTUAL WORKOUT ///////////////////////
 
@@ -269,23 +294,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void activeLift(int n) {
-
-        if (n == 1) {
-            //SQUAT
-            secondLiftTextView.setText("Sumo DL");
-        } else if (n == 2) {
-            //BENCH
-            secondLiftTextView.setText("C.G. Bench");
-        } else if (n == 3) {
-            //DEADLIFT
-            secondLiftTextView.setText("Front Squat");
-        }else if (n == 4) {
-            //OHP
-            secondLiftTextView.setText("Incline Bench");
-        }
-    }
-
     public void setFiveThreeOne (View view) {
 
         fiveThreeOne = true;
@@ -293,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
         offDay = false;
 
         fiveThreeOneTextView.setTextColor(Color.WHITE);
-        secondLiftTextView.setTextColor(Color.BLACK);
+        ((TextView) secondLiftSpinner.getSelectedView()).setTextColor(Color.BLACK);
         offDayTextView.setTextColor(Color.BLACK);
 
         LinearLayout set9LinearLayout = (LinearLayout) findViewById(R.id.set9LinearLayout);
@@ -413,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
         fiveThreeOne = false;
         offDay = false;
 
-        secondLiftTextView.setTextColor(Color.WHITE);
+
         fiveThreeOneTextView.setTextColor(Color.BLACK);
         offDayTextView.setTextColor(Color.BLACK);
 
@@ -427,7 +435,7 @@ public class MainActivity extends AppCompatActivity {
 
         double weight;
 
-        if (selectedLift == 1) {
+        if (secondLiftSpinner.getSelectedItemPosition() == 4) {
             //SUMO DL
             weight = Double.parseDouble(deadliftEditText.getText().toString());
 
@@ -449,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
             set7TextView.setText("Set 7 - 70%");
             set8TextView.setText("Set 8 - 70%");
 
-        } else if (selectedLift == 2) {
+        } else if (secondLiftSpinner.getSelectedItemPosition() == 0) {
             //CG BENCH
             weight = Double.parseDouble(benchEditText.getText().toString());
 
@@ -471,7 +479,7 @@ public class MainActivity extends AppCompatActivity {
             set7TextView.setText("Set 7 - 60%");
             set8TextView.setText("Set 8 - 60%");
 
-        } else if (selectedLift == 3) {
+        } else if (secondLiftSpinner.getSelectedItemPosition() == 1) {
             //FRONT SQUAT
             weight = Double.parseDouble(squatEditText.getText().toString());
 
@@ -493,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
             set7TextView.setText("Set 7 - 55%");
             set8TextView.setText("Set 8 - 55%");
 
-        } else if (selectedLift == 4) {
+        } else if (secondLiftSpinner.getSelectedItemPosition() == 2) {
             //INCLINE BENCH
             weight = Double.parseDouble(benchEditText.getText().toString());
 
@@ -514,6 +522,30 @@ public class MainActivity extends AppCompatActivity {
             set6TextView.setText("Set 6 - 60%");
             set7TextView.setText("Set 7 - 60%");
             set8TextView.setText("Set 8 - 60%");
+
+        } else if (secondLiftSpinner.getSelectedItemPosition() == 3) {
+
+            weight = Double.parseDouble(overheadpressEditText.getText().toString());
+
+            set1NumTextView.setText(round5(weight * .4) + " x 5");
+            set2NumTextView.setText(round5(weight * .5) + " x 5");
+            set3NumTextView.setText(round5(weight * .6) + " x 3");
+            set4NumTextView.setText(round5(weight * .6) + " x 5");
+            set5NumTextView.setText(round5(weight * .6) + " x 7");
+            set6NumTextView.setText(round5(weight * .6) + " x 4");
+            set7NumTextView.setText(round5(weight * .6) + " x 6");
+            set8NumTextView.setText(round5(weight * .6) + " x 8");
+
+            set1TextView.setText("Set 1 - 50%");
+            set2TextView.setText("Set 2 - 60%");
+            set3TextView.setText("Set 3 - 70%");
+            set4TextView.setText("Set 4 - 70%");
+            set5TextView.setText("Set 5 - 70%");
+            set6TextView.setText("Set 6 - 70%");
+            set7TextView.setText("Set 7 - 70%");
+            set8TextView.setText("Set 8 - 70%");
+
+
         }
     }
 
@@ -525,7 +557,8 @@ public class MainActivity extends AppCompatActivity {
         offDay = true;
 
         fiveThreeOneTextView.setTextColor(Color.BLACK);
-        secondLiftTextView.setTextColor(Color.BLACK);
+
+        ((TextView) secondLiftSpinner.getSelectedView()).setTextColor(Color.BLACK);
         offDayTextView.setTextColor(Color.WHITE);
 
         LinearLayout set9LinearLayout = (LinearLayout) findViewById(R.id.set9LinearLayout);
@@ -683,7 +716,7 @@ public class MainActivity extends AppCompatActivity {
     public void toWeekOverview (View view) {
 
         Intent intent = new Intent(getApplicationContext(), WeekOverviewActivity.class);
-        intent.putExtra("workoutState", workoutState);
+        //intent.putExtra("workoutState", workoutState);
         startActivity(intent);
     }
 
@@ -792,6 +825,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
         TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
         howToTextView.setTextColor(Color.WHITE);
+        setHowTo = true;
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -820,6 +854,7 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
         TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
+        setHowTo = false;
 
         howToTextView.setTextColor(Color.BLACK);
 
@@ -849,6 +884,7 @@ public class MainActivity extends AppCompatActivity {
         final ScrollView notesLayout = (ScrollView) findViewById(R.id.notesLayout);
         final EditText accessoryNotes = (EditText) findViewById(R.id.accesoryNotes);
         final TextView notesLiftTextView = (TextView) findViewById(R.id.notesLiftTextView);
+        setNotes = true;
 
         final String[] savedNotes = new String[4];
 
@@ -899,8 +935,6 @@ public class MainActivity extends AppCompatActivity {
 
         dimScreen();
 
-
-
         accessoryNotes.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -940,8 +974,9 @@ public class MainActivity extends AppCompatActivity {
 
         final ScrollView notesLayout = (ScrollView) findViewById(R.id.notesLayout);
         final EditText accesortyNotes = (EditText) findViewById(R.id.accesoryNotes);
+        setNotes = false;
 
-        howToTextView.setTextColor(Color.BLACK);
+        //howToTextView.setTextColor(Color.BLACK);  NEED TO SET TO WHITE NOTES IMAGE
 
         notesLayout.animate().translationY(1500)
                 .setListener(new Animator.AnimatorListener() {
@@ -979,16 +1014,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isViewInBounds(View view, int x, int y){
-
-        Rect outRect = new Rect();
-        int[] location = new int[2];
-
-        view.getDrawingRect(outRect);
-        view.getLocationOnScreen(location);
-        outRect.offset(location[0], location[1]);
-        return outRect.contains(x, y);
-    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -1000,49 +1025,50 @@ public class MainActivity extends AppCompatActivity {
 
         if (setMax) {
 
-           maxLayout.getLocationOnScreen(location);
-
+            maxLayout.getLocationOnScreen(location);
             viewRect.set(maxLayout.getLeft(), location[1] , maxLayout.getRight(), location[1] + maxLayout.getHeight());
-            //maxLayout.getDrawingRect(viewRect);
-            Log.i("height and width", String.valueOf(maxLayout.getHeight()) + "  " + String.valueOf(maxLayout.getWidth()));
 
             if (ev.getAction() == MotionEvent.ACTION_UP) {
-
                 if (!viewRect.contains(x,y)) {
                     Log.i("outside touch", "detected");
                     closeMax(maxLayout);
-                    /*
-                    maxTextView.setTextColor(Color.BLACK);
-
-                    maxLayout.animate().translationY(1500)
-                            .setListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animator) {}
-                                @Override
-                                public void onAnimationEnd(Animator animator) {
-
-                                    maxLayout.setVisibility(View.GONE);
-                                }
-                                @Override
-                                public void onAnimationCancel(Animator animator) {}
-                                @Override
-                                public void onAnimationRepeat(Animator animator) {}
-                            });
-                    dimScreen();
-                    setMax = false;
-                    */
                     return true;
-
                 } else if (viewRect.contains(x,y)) {
-                    Log.i("inside touch", "detected");
+
+                }
+            }
+
+        } else if (setHowTo) {
+
+            howToTextView.getLocationOnScreen(location);
+            viewRect.set(howToTextView.getLeft(), location[1], howToTextView.getRight(), location[1] + howToTextView.getHeight());
+
+            if (ev.getAction() == MotionEvent.ACTION_UP) {
+                if (!viewRect.contains(x,y)) {
+                    Log.i("outside touch", "detected");
+                    closeHowTo(howToTextView);
                     return true;
+                } else if (viewRect.contains(x,y)) {
+
+                }
+            }
+
+        } else if (setNotes) {
+
+            notesLayout.getLocationOnScreen(location);
+            viewRect.set(notesLayout.getLeft(), location[1], notesLayout.getRight(), location[1] + notesLayout.getHeight());
+
+            if (ev.getAction() == MotionEvent.ACTION_UP) {
+                if (!viewRect.contains(x,y)) {
+                    Log.i("outside touch", "detected");
+                    closeNotes(notesLayout);
+
+                    return true;
+                } else if (viewRect.contains(x,y)) {
+
                 }
             }
         }
-
-
-
-
         return super.dispatchTouchEvent(ev);
     }
 
@@ -1090,6 +1116,7 @@ public class MainActivity extends AppCompatActivity {
         verticalScrollView = (ScrollView) findViewById(R.id.verticalScrollView);
         workoutLinearLayout = (LinearLayout) findViewById(R.id.workoutLinearLayout);
         bottomButtonsLayout = (LinearLayout) findViewById(R.id.bottomButtonsLayout);
+        notesLayout = (ScrollView) findViewById(R.id.notesLayout);
 
         //SettingsActivity.screenSleepSwitch = (Switch) findViewById(R.id.screenSleepSwitch);
 
@@ -1102,7 +1129,7 @@ public class MainActivity extends AppCompatActivity {
         deadliftTextView = (TextView) findViewById(R.id.deadliftTextView);
         overheadpressTextView = (TextView) findViewById(R.id.overheadpressTextView);
 
-        secondLiftTextView = (TextView) findViewById(R.id.secondLiftTextView);
+        secondLiftSpinner = (CustomSpinner) findViewById(R.id.secondLiftSpinner);
         fiveThreeOneTextView = (TextView) findViewById(R.id.fiveThreeOneTextView);
         offDayTextView = (TextView) findViewById(R.id.offdayTextView);
 

@@ -7,13 +7,16 @@
         android:title="Home" />
     <item
         android:id="@+id/fourDayMenu"
-        android:title="4 - Day" />
+        android:title="4-Day" />
     <item
         android:id="@+id/fiveDayMenu"
-        android:title="5 - Day" />
+        android:title="5-Day" />
     <item
-        android:id="@+id/sixDayMenu"
-        android:title="6 - Day" />
+        android:id="@+id/sixDaySquatMenu"
+        android:title="6-Day Squat" />
+    <item
+        android:id="@+id/sixDayDeadliftMenu"
+        android:title="6-Day DeadLift" />
     <item
         android:id="@+id/customMenu"
         android:title="Custom" />

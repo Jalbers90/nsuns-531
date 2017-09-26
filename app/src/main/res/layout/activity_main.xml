@@ -24,19 +24,19 @@
 
         <TextView
             android:id="@+id/weekTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1.36"
             android:gravity="left|center"
             android:onClick="toWeekOverview"
             android:paddingStart="10dp"
             android:text="Overview"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:layout_weight="1.17" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/maxTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -49,17 +49,17 @@
 
         <ImageView
             android:id="@+id/notesImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.17"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:onClick="toNotes"
             app:srcCompat="@drawable/notepad_black" />
 
         <TextView
             android:id="@+id/howToTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.69"
             android:gravity="center"
             android:onClick="toHowTo"
             android:text="\?"
@@ -68,7 +68,7 @@
 
         <ImageView
             android:id="@+id/settingsImageView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:onClick="toSettings"
@@ -92,7 +92,7 @@
         <TextView
             android:id="@+id/fiveThreeOneTextView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:onClick="setFiveThreeOne"
@@ -103,7 +103,7 @@
         <TextView
             android:id="@+id/offdayTextView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:onClick="setOffDay"
@@ -111,16 +111,11 @@
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/secondLiftTextView"
+        <com.jalbers.nsunstest.CustomSpinner
+            android:id="@+id/secondLiftSpinner"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="setSecondLift"
-            android:text="Second Lift"
-            android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -172,7 +167,7 @@
                     android:gravity="center"
                     android:text="SQUAT"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/squatEditText"
@@ -205,7 +200,7 @@
                     android:gravity="center"
                     android:text="BENCH PRESS"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/benchEditText"
@@ -235,7 +230,7 @@
                     android:gravity="center"
                     android:text="DEADLIFT"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/deadliftEditText"
@@ -265,7 +260,7 @@
                     android:gravity="center"
                     android:text="OVERHEAD PRESS"
                     android:textColor="@android:color/black"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/overheadpressEditText"
@@ -296,7 +291,6 @@
         android:id="@+id/verticalScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#757575"
         android:clickable="true"
         android:isScrollContainer="false"
         android:visibility="visible"

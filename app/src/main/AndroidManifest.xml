@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -24,7 +25,7 @@
 
         <activity
             android:name=".WeekOverviewActivity"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:theme="@style/Theme.AppCompat" />
 
         <activity
             android:name=".SettingsActivity"

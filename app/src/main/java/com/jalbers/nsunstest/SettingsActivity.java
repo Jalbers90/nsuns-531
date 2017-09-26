@@ -3,6 +3,7 @@ package com.jalbers.nsunstest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -23,7 +25,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_action_bar);
@@ -36,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         roundingSpinner.setAdapter(spinnerAdapter);
 
-
+        /*
         screenSleepSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -48,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
-
+        */
 
         roundingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -56,9 +57,11 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (i == 0) {
                     MainActivity.catherineMartin = true;
+                    ((TextView) view).setTextColor(Color.WHITE);
 
                 } else if (i == 1) {
                     MainActivity.catherineMartin = false;
+                    ((TextView) view).setTextColor(Color.WHITE);
 
                 }
 
