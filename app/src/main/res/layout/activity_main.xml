@@ -657,8 +657,8 @@
         android:id="@+id/maxLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
         android:background="@drawable/max_relativelayout_border"
         android:clickable="true"
         android:focusableInTouchMode="true"
@@ -785,48 +785,25 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/setHowToTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:background="@drawable/max_relativelayout_border"
-        android:onClick="closeHowTo"
-        android:paddingBottom="10dp"
-        android:paddingEnd="10dp"
-        android:paddingStart="10dp"
-        android:paddingTop="10dp"
-        android:text="How to:\n\nThe numbers at the top represent your training max (90% of your 1 Rep Max). Insert your training max for each of the big 4 lifts and your workouts will be populated for each three categories below. At the end of each week you will have to manually enter your new training max.\n\nIf you are unsure of your training max you can use the “MAX” button to calculate an estimated 1 rep max and/or training max.\n\nUse the “Week Overview” to determine which program is best for you and for your personal notes.\n\nIf you are unfamiliar with the N-Suns 5/3/1 LP you can read more at www.Reddit.com/r/nsuns/about. "
-        android:textSize="15sp"
-        android:translationY="600dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp" />
-
     <ScrollView
         android:id="@+id/notesLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
         android:background="@drawable/max_relativelayout_border"
+        android:clickable="true"
         android:translationY="600dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/workoutLinearLayout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -870,6 +847,46 @@
         </LinearLayout>
 
 
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/howtoLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:clickable="true"
+        android:translationY="600dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/setHowToTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:background="@drawable/max_relativelayout_border"
+                android:paddingBottom="10dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:text="How to:\n\nThe numbers at the top represent your training max (90% of your 1 Rep Max). Insert your training max for each of the big 4 lifts and your workouts will be populated for each three categories below. At the end of each week you will have to manually enter your new training max. You MUST press enter when entering a new number or your weight will not be saved and the workout will not be populated.\n\nIf you are unsure of your training max you can use the “MAX” button to calculate an estimated 1 rep max and/or training max.\n\nTap the note icon to keep track of accesory lifts and personal notes for each major lift.\n\nUse the “Overview” to determine which program is best for you or create your own.\n\nIf you are unfamiliar with the N-Suns 5/3/1 LP you can read more at www.Reddit.com/r/nsuns/about. "
+                android:textSize="15sp"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
     </ScrollView>
 
 

@@ -7,89 +7,75 @@
     tools:context="com.jalbers.nsunstest.SettingsActivity">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/underline_border"
-        android:orientation="horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.021">
 
-        <TextView
-            android:id="@+id/roundToNearestTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/underline_border"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/roundToNearestTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="10dp"
+                android:paddingStart="0dp"
+                android:paddingTop="10dp"
+                android:text="Round to nearest...."
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/roundingSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
             android:layout_weight="1"
-            android:paddingBottom="10dp"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
-            android:text="Round to nearest...."
-            android:textSize="18sp" />
+            android:background="@drawable/underline_border"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.247">
 
-        <Spinner
-            android:id="@+id/roundingSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/underline_border"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.157">
-
-        <TextView
-            android:id="@+id/screenSleepTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingBottom="10dp"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
-            android:text="Prevent Screen Sleep"
-            android:textSize="18sp" />
-
-        <Switch
-            android:id="@+id/screenSleepSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/underline_border"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.247">
-
-        <TextView
-            android:id="@+id/redditTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:autoLink="web"
-            android:paddingBottom="10dp"
-            android:paddingStart="10dp"
-            android:paddingTop="10dp"
-            android:text="Reddit.com/r/nsuns"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/redditTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:autoLink="web"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="Reddit.com/r/nsuns"
+                android:textSize="18sp" />
+        </LinearLayout>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

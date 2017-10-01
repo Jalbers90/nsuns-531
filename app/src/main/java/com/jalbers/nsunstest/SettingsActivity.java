@@ -8,6 +8,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,26 +33,10 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.custom_action_bar);
 
         roundingSpinner = (Spinner) findViewById(R.id.roundingSpinner);
-        screenSleepSwitch = (Switch) findViewById(R.id.screenSleepSwitch);
-
         String[] items = new String[] {"5", "2.5"};
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, items);
 
         roundingSpinner.setAdapter(spinnerAdapter);
-
-        /*
-        screenSleepSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    Log.i ("hello:", "is this working?");
-                }
-                else {
-                    Log.i ("yes no", "maybe, i don't know");
-                }
-            }
-        });
-        */
 
         roundingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,4 +72,28 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
+
+    /////  MENU CREATION //////////////////////////////////////
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.settings_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.homeMenu:
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    /////////// END MENU CREATION ///////////////////////////////////////
 }

@@ -25,25 +25,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.concurrent.CountDownLatch;
 
-import static android.R.attr.animation;
-import static android.R.attr.keepScreenOn;
+
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout workoutLinearLayout;
     LinearLayout bottomButtonsLayout;
     ScrollView notesLayout;
+    ScrollView howtoLayout;
 
     EditText squatEditText;
     EditText benchEditText;
@@ -91,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     TextView maxTextView;
     TextView howToTextView;
     ImageView settingsImageView;
+    ImageView notesImageView;
 
     TextView set1TextView;
     TextView set1NumTextView;
@@ -126,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         uiRefSetup();
-
-        //Intent intent = getIntent();
-        //workoutState = intent.getIntExtra("workoutState", -1);
 
         squatEditText.setOnKeyListener(onKeyListener);
         benchEditText.setOnKeyListener(onKeyListener);
@@ -227,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //activeLift(selectedLift);
                             if (fiveThreeOne) setFiveThreeOneText();
+
                             if (offDay) setOffDayText();
 
                             break;
@@ -242,12 +238,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onGlobalLayout() {
                 horizontalScrollView.smoothScrollTo(200,0); //// NEED TO SET EXACT WIDTH TO MID SQUAT LAYOUT POINT
+                setFiveThreeOne(fiveThreeOneTextView);
+                squatEditText.setTextColor(Color.WHITE);
+                squatTextView.setTextColor(Color.WHITE);
                 horizontalScrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });/////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // INTITIAL SET UP //////////////////////////////////////////////////////////////////////
-        setFiveThreeOneText();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
@@ -274,7 +271,6 @@ public class MainActivity extends AppCompatActivity {
         DecimalFormat format = new DecimalFormat("0.#");
 
         if (catherineMartin) {
-
             double temp = n % 5;
 
             if (temp < 2.5)
@@ -716,7 +712,6 @@ public class MainActivity extends AppCompatActivity {
     public void toWeekOverview (View view) {
 
         Intent intent = new Intent(getApplicationContext(), WeekOverviewActivity.class);
-        //intent.putExtra("workoutState", workoutState);
         startActivity(intent);
     }
 
@@ -823,6 +818,7 @@ public class MainActivity extends AppCompatActivity {
     public void toHowTo (View view) {
 
         final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
+        final ScrollView howtoLayout = (ScrollView) findViewById(R.id.howtoLayout);
         TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
         howToTextView.setTextColor(Color.WHITE);
         setHowTo = true;
@@ -830,11 +826,11 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-        setHowToTextView.animate().y((float) (displayMetrics.heightPixels * .05))
+        howtoLayout.animate().y((float) (displayMetrics.heightPixels * .05))
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {
-                        setHowToTextView.setVisibility(View.VISIBLE);
+                        howtoLayout.setVisibility(View.VISIBLE);
                     }
                     @Override
                     public void onAnimationEnd(Animator animator) {}
@@ -853,19 +849,20 @@ public class MainActivity extends AppCompatActivity {
     public void closeHowTo (View view) {
 
         final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
+        final ScrollView howtoLayout = (ScrollView) findViewById(R.id.howtoLayout);
         TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
         setHowTo = false;
 
         howToTextView.setTextColor(Color.BLACK);
 
-        setHowToTextView.animate().translationY(1500)
+        howtoLayout.animate().translationY(1500)
                 .setListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animator) {}
                     @Override
                     public void onAnimationEnd(Animator animator) {
 
-                       setHowToTextView.setVisibility(View.GONE);
+                       howtoLayout.setVisibility(View.GONE);
                     }
                     @Override
                     public void onAnimationCancel(Animator animator) {}
@@ -885,8 +882,12 @@ public class MainActivity extends AppCompatActivity {
         final EditText accessoryNotes = (EditText) findViewById(R.id.accesoryNotes);
         final TextView notesLiftTextView = (TextView) findViewById(R.id.notesLiftTextView);
         setNotes = true;
+        notesImageView.setImageResource(R.drawable.notepad_white);
+
 
         final String[] savedNotes = new String[4];
+
+
 
         /////////////////////////////// GETTING SHARED PREFERENCES FOR THE NOTES //////////////////////
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
@@ -975,6 +976,7 @@ public class MainActivity extends AppCompatActivity {
         final ScrollView notesLayout = (ScrollView) findViewById(R.id.notesLayout);
         final EditText accesortyNotes = (EditText) findViewById(R.id.accesoryNotes);
         setNotes = false;
+        notesImageView.setImageResource(R.drawable.notepad_black);
 
         //howToTextView.setTextColor(Color.BLACK);  NEED TO SET TO WHITE NOTES IMAGE
 
@@ -1040,13 +1042,13 @@ public class MainActivity extends AppCompatActivity {
 
         } else if (setHowTo) {
 
-            howToTextView.getLocationOnScreen(location);
-            viewRect.set(howToTextView.getLeft(), location[1], howToTextView.getRight(), location[1] + howToTextView.getHeight());
+            howtoLayout.getLocationOnScreen(location);
+            viewRect.set(howtoLayout.getLeft(), location[1], howtoLayout.getRight(), location[1] + howtoLayout.getHeight());
 
             if (ev.getAction() == MotionEvent.ACTION_UP) {
                 if (!viewRect.contains(x,y)) {
                     Log.i("outside touch", "detected");
-                    closeHowTo(howToTextView);
+                    closeHowTo(howtoLayout);
                     return true;
                 } else if (viewRect.contains(x,y)) {
 
@@ -1117,6 +1119,7 @@ public class MainActivity extends AppCompatActivity {
         workoutLinearLayout = (LinearLayout) findViewById(R.id.workoutLinearLayout);
         bottomButtonsLayout = (LinearLayout) findViewById(R.id.bottomButtonsLayout);
         notesLayout = (ScrollView) findViewById(R.id.notesLayout);
+        howtoLayout = (ScrollView) findViewById(R.id.howtoLayout);
 
         //SettingsActivity.screenSleepSwitch = (Switch) findViewById(R.id.screenSleepSwitch);
 
@@ -1137,6 +1140,7 @@ public class MainActivity extends AppCompatActivity {
         maxTextView = (TextView) findViewById(R.id.maxTextView);
         howToTextView = (TextView) findViewById(R.id.howToTextView);
         settingsImageView = (ImageView) findViewById(R.id.settingsImageView);
+        notesImageView = (ImageView) findViewById(R.id.notesImageView);
 
         set1TextView = (TextView) findViewById(R.id.set1TextView);
         set1NumTextView = (TextView) findViewById(R.id.set1NumTextView);

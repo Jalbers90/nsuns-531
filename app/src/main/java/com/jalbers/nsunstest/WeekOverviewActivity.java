@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.PersistableBundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,14 +15,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class WeekOverviewActivity extends AppCompatActivity {
 
     //UI REF SETUP //
+
+    LinearLayout weekOverviewLayout;
 
     //Day 1
     EditText day1EditText1;
@@ -58,6 +69,8 @@ public class WeekOverviewActivity extends AppCompatActivity {
     EditText day7EditText2;
     EditText day7AccessoryEditText;
 
+    Button saveButton;
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -68,7 +81,8 @@ public class WeekOverviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_week_overview);
 
-        setTitle("Week Overview");
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.custom_action_bar_weekoverview);
         uiRefSetup();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
@@ -78,7 +92,10 @@ public class WeekOverviewActivity extends AppCompatActivity {
         else if (workoutState == 1) fiveDaySetup();
         else if (workoutState == 2) sixDayDeadliftSetup();
         else if (workoutState == 3) sixDaySquatSetup();
-        else if (workoutState == 4) customSetup();
+        else if (workoutState == 4) {
+            allowEdit();
+            customSetup();
+        }
 
     }
 
@@ -108,32 +125,32 @@ public class WeekOverviewActivity extends AppCompatActivity {
 
             case R.id.fourDayMenu:
                 stopEdit();
-                editor.putInt("workoutState", 0);
+                editor.putInt("workoutState", 0).apply();
                 fourDaySetup();
                 return true;
                 //return true;
 
             case R.id.fiveDayMenu:
                 stopEdit();
-                editor.putInt("workoutState", 1);
+                editor.putInt("workoutState", 1).apply();
                 fiveDaySetup();
                 return true;
 
             case R.id.sixDaySquatMenu:
                 stopEdit();
-                editor.putInt("workoutState", 2);
+                editor.putInt("workoutState", 2).apply();
                 sixDaySquatSetup();
                 return true;
 
             case R.id.sixDayDeadliftMenu:
                 stopEdit();
-                editor.putInt("workoutState", 3);
+                editor.putInt("workoutState", 3).apply();
                 sixDayDeadliftSetup();
                 return true;
 
             case R.id.customMenu:
                 allowEdit();
-                editor.putInt("workoutState", 4);
+                editor.putInt("workoutState", 4).apply();
                 customSetup();
                 return true;
         }
@@ -210,6 +227,10 @@ public class WeekOverviewActivity extends AppCompatActivity {
 
     public void fourDaySetup () {
 
+        if (saveButton.getVisibility() == View.VISIBLE) {
+            saveButton.setVisibility(View.GONE);
+        }
+
         //Day1
         day1EditText1.setText("Bench");
         day1EditText2.setText("OHP");
@@ -247,6 +268,10 @@ public class WeekOverviewActivity extends AppCompatActivity {
     }
 
     public void fiveDaySetup() {
+
+        if (saveButton.getVisibility() == View.VISIBLE) {
+            saveButton.setVisibility(View.GONE);
+        }
 
         //Day1
         day1EditText1.setText("Bench");
@@ -286,6 +311,10 @@ public class WeekOverviewActivity extends AppCompatActivity {
 
     public void sixDaySquatSetup() {
 
+        if (saveButton.getVisibility() == View.VISIBLE) {
+            saveButton.setVisibility(View.GONE);
+        }
+
         //Day1
         day1EditText1.setText("Bench");
         day1EditText2.setText("OHP");
@@ -323,6 +352,10 @@ public class WeekOverviewActivity extends AppCompatActivity {
     }
 
     public void sixDayDeadliftSetup() {
+
+        if (saveButton.getVisibility() == View.VISIBLE) {
+            saveButton.setVisibility(View.GONE);
+        }
 
         //Day1
         day1EditText1.setText("Bench");
@@ -362,43 +395,89 @@ public class WeekOverviewActivity extends AppCompatActivity {
 
     public void customSetup() {
 
+        saveButton.setVisibility(View.VISIBLE);
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String[] storedTexts = new String[21];
+
+        for (int i = 0; i < storedTexts.length; i++) {
+            storedTexts[i] = sharedPref.getString("savedText_" + i, "");
+        }
+
         //Day1
-        day1EditText1.setText("");
-        day1EditText2.setText("");
-        day1AccessoryEditText.setText("");
+        day1EditText1.setText(storedTexts[0]);
+        day1EditText2.setText(storedTexts[1]);
+        day1AccessoryEditText.setText(storedTexts[2]);
 
         //Day2
-        day2EditText1.setText("");
-        day2EditText2.setText("");
-        day2AccessoryEditText.setText("");
+        day2EditText1.setText(storedTexts[3]);
+        day2EditText2.setText(storedTexts[4]);
+        day2AccessoryEditText.setText(storedTexts[5]);
 
         //Day3
-        day3EditText1.setText("");
-        day3EditText2.setText("");
-        day3AccessoryEditText.setText("");
+        day3EditText1.setText(storedTexts[6]);
+        day3EditText2.setText(storedTexts[7]);
+        day3AccessoryEditText.setText(storedTexts[8]);
 
         //Day4
-        day4EditText1.setText("");
-        day4EditText2.setText("");
-        day4AccessoryEditText.setText("");
+        day4EditText1.setText(storedTexts[9]);
+        day4EditText2.setText(storedTexts[10]);
+        day4AccessoryEditText.setText(storedTexts[11]);
 
         //Day5
-        day5EditText1.setText("");
-        day5EditText2.setText("");
-        day5AccessoryEditText.setText("");
+        day5EditText1.setText(storedTexts[12]);
+        day5EditText2.setText(storedTexts[13]);
+        day5AccessoryEditText.setText(storedTexts[14]);
 
         //Day6
-        day6EditText1.setText("");
-        day6EditText2.setText("");
-        day6AccessoryEditText.setText("");
+        day6EditText1.setText(storedTexts[15]);
+        day6EditText2.setText(storedTexts[16]);
+        day6AccessoryEditText.setText(storedTexts[17]);
 
         //Day7
-        day7EditText1.setText("");
-        day7EditText2.setText("");
-        day7AccessoryEditText.setText("");
+        day7EditText1.setText(storedTexts[18]);
+        day7EditText2.setText(storedTexts[19]);
+        day7AccessoryEditText.setText(storedTexts[20]);
     }
 
-    public void uiRefSetup () {
+    public void saveEdits (View view) {
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("com.jalbers.nsunstest", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        ArrayList<String> savedEdits = new ArrayList<>();
+
+        loopViews(weekOverviewLayout, savedEdits);
+
+
+        for (int i = 0; i < savedEdits.size(); i++) {
+
+            editor.putString("savedText_" + i, savedEdits.get(i));
+        }
+        editor.apply();
+
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+    }
+
+    private void loopViews(ViewGroup view, ArrayList<String> values) {
+
+        for (int i = 0; i < view.getChildCount(); i++) {
+            View v = view.getChildAt(i);
+
+            if (v instanceof EditText) {
+                // Do something
+                values.add(((EditText) v).getText().toString());
+
+            } else if (v instanceof ViewGroup) {
+
+                this.loopViews((ViewGroup) v, values);
+            }
+        }
+    }
+
+    public void uiRefSetup() {
+
+        weekOverviewLayout = (LinearLayout) findViewById(R.id.weekOverviewLayout);
 
         //Day 1
         day1EditText1 = (EditText) findViewById(R.id.day1EditText1);
@@ -435,24 +514,11 @@ public class WeekOverviewActivity extends AppCompatActivity {
         day7EditText2 = (EditText) findViewById(R.id.day7EditText2);
         day7AccessoryEditText = (EditText) findViewById(R.id.day7AccessoryEditText);
 
+        saveButton = (Button) findViewById(R.id.saveButton);
+
 
     }
 
-    TextWatcher watcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-        }
-    };
 
 }

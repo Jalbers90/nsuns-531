@@ -2,24 +2,27 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/weekOverviewLayout"
+    android:id="@+id/overallLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.jalbers.nsunstest.WeekOverviewActivity">
 
 
     <ScrollView
+        android:id="@+id/weekOverviewScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/weekOverviewLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/day1VerticalLayout"
@@ -570,10 +573,9 @@
             <LinearLayout
                 android:id="@+id/day7VerticalLayout"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:layout_marginStart="15dp"
-                android:layout_weight="1"
                 android:background="@drawable/underline_border"
                 android:orientation="vertical">
 
@@ -581,7 +583,6 @@
                     android:id="@+id/day7HorizontalLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <TextView
@@ -627,7 +628,6 @@
                     android:id="@+id/day7HorizontalLayoutAccessory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="horizontal"
                     android:paddingBottom="5dp">
 
@@ -656,8 +656,22 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/saveButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="8dp"
+                android:elevation="0dp"
+                android:minHeight="5dp"
+                android:minWidth="5dp"
+                android:onClick="saveEdits"
+                android:text="Save Edits"
+                android:visibility="gone" />
 
 
         </LinearLayout>
     </ScrollView>
+
 </android.support.constraint.ConstraintLayout>
