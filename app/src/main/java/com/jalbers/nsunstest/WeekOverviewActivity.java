@@ -118,10 +118,12 @@ public class WeekOverviewActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
+            /*
             case R.id.homeMenu:
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 return true;
+            */
 
             case R.id.fourDayMenu:
                 stopEdit();

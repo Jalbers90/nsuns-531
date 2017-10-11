@@ -9,7 +9,10 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -55,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     boolean setNotes = false;
     boolean setHowTo = false;
     boolean setSpinner = false;
+    static boolean red = true;
+    static boolean blue = false;
     static boolean catherineMartin = true;
 
 
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
     TextView weekTextView;
     TextView maxTextView;
     TextView howToTextView;
+    TextView setHowToTextView;
     ImageView settingsImageView;
     ImageView notesImageView;
 
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         overheadpressEditText.setOnKeyListener(onKeyListener);
 
         String[] spinnerItems = new String[] {"C.G. Bench", "Front Squats", "Incline Bench", "OHP", "Sumo DL"};
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnerItems);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, spinnerItems);
         secondLiftSpinner.setAdapter(spinnerAdapter);
         secondLiftSpinner.setOnItemSelectedEvenIfUnchangedListener(itemSelectedListener);
 
@@ -248,8 +254,10 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
+
+
     ////////////// SET SECOND LIFT SPINNER LISTENER //////////////////////////////////////////////
-        AdapterView.OnItemSelectedListener itemSelectedListener = (new AdapterView.OnItemSelectedListener() {
+    AdapterView.OnItemSelectedListener itemSelectedListener = (new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -263,6 +271,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {}
     }); ////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
 
     ////// SETTING NUMBERS FOR ACTUAL WORKOUT ///////////////////////
 
@@ -717,9 +731,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void toSettings (View view) {
 
+        onPause();
         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
         startActivity(intent);
     }
+
 
     ////// MAX BUTTON CODE ///////////////////////////////////
     public void toSetMax (View view) {
@@ -817,7 +833,6 @@ public class MainActivity extends AppCompatActivity {
     ///////////BRING UP "HOW TO" ////////////////////////////////////
     public void toHowTo (View view) {
 
-        final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
         final ScrollView howtoLayout = (ScrollView) findViewById(R.id.howtoLayout);
         TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
         howToTextView.setTextColor(Color.WHITE);
@@ -848,7 +863,6 @@ public class MainActivity extends AppCompatActivity {
     ///////////////////////////// CLOSE "HOW TO" ///////////////////////////////////
     public void closeHowTo (View view) {
 
-        final TextView setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
         final ScrollView howtoLayout = (ScrollView) findViewById(R.id.howtoLayout);
         TextView howToTextView = (TextView) findViewById(R.id.howToTextView);
         setHowTo = false;
@@ -1017,6 +1031,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    ////SET COLOR SCHEME
+    /*
+    public void setColor () {
+
+        if (red) {
+
+            horizontalScrollView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
+            bottomButtonsLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
+            workoutLinearLayout.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), android.R.color.holo_red_dark));
+
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.underline_border);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                drawable.setTint(Color.parseColor("#f00"));
+            }
+
+        } else if (blue) {
+
+            horizontalScrollView.setBackgroundColor(Color.parseColor("#607D8B"));
+            bottomButtonsLayout.setBackgroundColor(Color.parseColor("#607D8B"));
+            workoutLinearLayout.setBackgroundColor(Color.parseColor("#607D8B"));
+
+            Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.underline_border);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                drawable.setTint(Color.parseColor("#607D8B"));
+            }
+        }
+    }
+    */
+
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
@@ -1075,21 +1119,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    ///////////// PREVENT SCREEN SLEEP CODE //////////////////////////////////////
-/*
-    public void preventScreenSleep(View view) {
-
-        if (SettingsActivity.screenSleepSwitch.isChecked()) {
-
-            mainLayout.setKeepScreenOn(true);
-        } else if (!screenSleepSwitch.isChecked()) {
-
-            mainLayout.setKeepScreenOn(false);
-        }
-    }
-    */
-
-
 
     public void saveWeight (float[] array) {
 
@@ -1139,6 +1168,7 @@ public class MainActivity extends AppCompatActivity {
         weekTextView = (TextView) findViewById(R.id.weekTextView);
         maxTextView = (TextView) findViewById(R.id.maxTextView);
         howToTextView = (TextView) findViewById(R.id.howToTextView);
+        setHowToTextView = (TextView) findViewById(R.id.setHowToTextView);
         settingsImageView = (ImageView) findViewById(R.id.settingsImageView);
         notesImageView = (ImageView) findViewById(R.id.notesImageView);
 
