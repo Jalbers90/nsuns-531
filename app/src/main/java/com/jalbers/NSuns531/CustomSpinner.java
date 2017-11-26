@@ -1,11 +1,9 @@
-package com.jalbers.nsunstest;
+package com.jalbers.NSuns531;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Spinner;
-import android.support.v7.widget.AppCompatSpinner;
 
 public class CustomSpinner extends android.support.v7.widget.AppCompatSpinner {
     OnItemSelectedListener listener;

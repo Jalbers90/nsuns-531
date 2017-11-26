@@ -7,15 +7,15 @@ android {
         applicationId "com.jalbers.nsunstest"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         release {
-            storeFile file("C:/Users/jalbe/Desktop/nSuns ScreenShots/Nsuns beta Release Build.jks")
+            storeFile file("C:/Users/jalbe/Desktop/nSuns ScreenShots/Nsuns Release Build.jks")
             storePassword "crossfit90"
-            keyAlias "nSunsKey"
+            keyAlias "nsunskey"
             keyPassword "crossfit90"
             v2SigningEnabled true
         }

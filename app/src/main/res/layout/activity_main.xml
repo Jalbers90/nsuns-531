@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
-    tools:context="com.jalbers.nsunstest.MainActivity">
+    tools:context="com.jalbers.NSuns531.MainActivity">
 
     <LinearLayout
         android:id="@+id/bottomButtonsLayout"
@@ -111,7 +111,7 @@
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
-        <com.jalbers.nsunstest.CustomSpinner
+        <com.jalbers.NSuns531.CustomSpinner
             android:id="@+id/secondLiftSpinner"
             android:layout_width="0dp"
             android:layout_height="match_parent"

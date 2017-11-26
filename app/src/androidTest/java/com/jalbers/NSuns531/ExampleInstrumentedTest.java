@@ -1,4 +1,4 @@
-package com.jalbers.nsunstest;
+package com.jalbers.NSuns531;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

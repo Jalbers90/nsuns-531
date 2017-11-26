@@ -1,4 +1,4 @@
-package com.jalbers.nsunstest;
+package com.jalbers.NSuns531;
 
 import org.junit.Test;
 
